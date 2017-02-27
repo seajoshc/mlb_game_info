@@ -20,31 +20,40 @@ def lambda_handler(dummy_event, dummy_context):
     main function for aws lambda
     '''
     print('=========lambda_handler started...')
+    for team in mlbgame.teams():
+        get_team_info(team.club_common_name, team.club_full_name)
+
+def get_team_info(team_short_name, team_full_name):
+    '''
+    get all info for a team
+    '''
+    print('=========Working on:  ' + team_full_name)
     # get today's games
     games_today = mlbgame.day(
         int(time.strftime("%Y")), int(time.strftime("%-m")),
-        int(time.strftime("%-d")), home="Rays", away="Rays"
+        int(time.strftime("%-d")), home=team_short_name, away=team_short_name
     )
     # get yesterday's games
     yesterday = datetime.date.fromordinal(datetime.date.today().toordinal()-1)
     games_yesterday = mlbgame.day(
         int(yesterday.strftime("%Y")), int(yesterday.strftime("%-m")),
-        int(yesterday.strftime("%-d")), home="Rays", away="Rays"
+        int(yesterday.strftime("%-d")), home=team_short_name, away=team_short_name
     )
-    title_text = "Tampa Bay Rays Game Info"
+    title_text = team_full_name + " Game Info"
 
     if len(games_today) > 0:
         today_text = get_upcoming_game_information(games_today)
     else:
-        today_text = "There are no games scheduled today for the Rays."
+        today_text = "There are no games scheduled today for the " + \
+            team_short_name + "."
 
     if len(games_yesterday) > 0:
-        yesterday_text = get_yesterdays_game_information(games_yesterday, "Rays")
+        yesterday_text = get_yesterdays_game_information(games_yesterday, team_short_name)
     else:
-        yesterday_text = "The Rays did not play yesterday."
+        yesterday_text = "The " + team_short_name + " did not play yesterday."
 
     main_text = yesterday_text + " " + today_text
-    write_to_s3(generate_json(title_text, main_text), "rays")
+    write_to_s3(generate_json(title_text, main_text), team_short_name)
 
 def generate_json(title_text, main_text):
     '''
@@ -100,10 +109,13 @@ def get_yesterdays_game_information(games_yesterday, team):
     '''
     parse info for yesterday's games
     '''
-    if games_yesterday[0].w_team == team:
-        status = "won"
-    else:
-        status = "lost"
+    try:
+        if games_yesterday[0].w_team == team:
+            status = "won"
+        else:
+            status = "lost"
+    except AttributeError as dummy_err:
+        status = "tied"
 
     return "Yesterday, the " + team + " " + status + ". The score was " + \
         games_yesterday[0].nice_score() + ". "
