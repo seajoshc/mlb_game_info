@@ -10,6 +10,7 @@ import os
 import time
 import datetime
 import json
+import uuid
 import boto3
 from botocore.exceptions import ClientError
 import mlbgame
@@ -37,22 +38,22 @@ def lambda_handler(dummy_event, dummy_context):
     else:
         main_text = "There are no games scheduled today for the Rays."
 
-    write_to_s3(generate_json(title_text, main_text), "tampa_bay_rays")
+    write_to_s3(generate_json(title_text, main_text), "rays")
 
 def generate_json(title_text, main_text):
     '''
     generate the flash briefing json
     '''
+    uid = uuid.uuid1()
     utc_datetime = datetime.datetime.utcnow()
-    timestamp = utc_datetime.strftime("%Y-%M-%dT%H:%m:%S.0Z")
+    timestamp = utc_datetime.strftime("%Y-%m-%dT%H:%M:%S.0Z")
     data = {
-        "uid": "0",
+        "uid": uid.urn,
         "updateDate": timestamp,
         "titleText": title_text,
-        "mainText": main_text,
-        "redirectionUrl": "https://www.mlb.tv"
+        "mainText": main_text
     }
-    return json.dumps(data)
+    return json.dumps(data, indent=2)
 
 def write_to_s3(json_content, team_name):
     '''
@@ -69,6 +70,7 @@ def write_to_s3(json_content, team_name):
         return False
     try:
         client.put_object(
+            ContentType="application/json",
             Body=json_content,
             Bucket=os.environ['S3_BUCKET'],
             Key=bucket_key
@@ -86,4 +88,4 @@ def get_upcoming_game_information(games_today):
     '''
     return "Today, the " + games_today[0].away_team + " will play the " + \
         games_today[0].home_team + " at " + games_today[0].game_start_time + \
-        "Eastern time."
+        " Eastern time."
