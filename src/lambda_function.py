@@ -14,7 +14,7 @@ import boto3
 from botocore.exceptions import ClientError
 import mlbgame
 
-def lambda_handler(event, context):
+def lambda_handler(dummy_event, dummy_context):
     '''
     main function for aws lambda
     '''
@@ -25,19 +25,12 @@ def lambda_handler(event, context):
     games = mlbgame.day(int(year), int(month), int(day), home="Rays", away="Rays")
     title_text = "Tampa Bay Rays Game Info"
 
-    if games_today(games):
+    if len(games) > 0:
         main_text = "The Tampa Bay Rays play the Boston Red Sox today at 1:05pm Eastern."
     else:
         main_text = "There are no games scheduled today."
 
     write_to_s3(generate_json(title_text, main_text), "tampa_bay_rays")
-
-def games_today(games):
-    '''
-    check if there are any games being played today
-    '''
-    if len(games) > 0: return True
-    return False
 
 def generate_json(title_text, main_text):
     '''
@@ -77,4 +70,5 @@ def write_to_s3(json_content, team_name):
         print("Failed to upload artifact to S3.\n" + str(err))
         return False
 
+    print('=========s3 write successful')
     return True
