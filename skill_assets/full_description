@@ -1,9 +1,13 @@
-Now you can get your MLB updates for your favorite teams right in your Flash Briefing!  This skill has one feed for every MLB team so be sure to enable only the feeds for the teams you are interested in.
+Now you can get MLB game information for your favorite teams right in your Flash Briefing!  This Skill has one feed for every MLB team so be sure to enable the feeds for the teams you are interested in.
+
+Please note, Flash Briefing Skills must have a "Default" feed.  The Tampa Bay Rays feed will be enabled by default (the author's favorite team), so please remember to disable it in your Flash Briefing settings if you do not want Rays information.
 
 This Skill currently tells you the following during your Flash Briefing:
 * Opponent and time for today's game if there is one
 * Result and score for yesterday's game if there was one
 
-Data for the feeds is updated once per day at 4am Eastern Time.
+Data for all feeds is currently only updated once per day at 4am Eastern Time.
 
-You can contact me directly at josh@userdel.com, or https://github.com/irlrobot/mlb_game_info, for feedback and bug reports.
+You can contact me directly at josh@userdel.com, or https://github.com/irlrobot/mlb_game_info, for feedback and bug reports.  Enjoy!
+
+This skill is not sponsored or endorsed by Major League Baseball (MLB) or any of its affiliates.
