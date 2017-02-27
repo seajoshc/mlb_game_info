@@ -1,0 +1,9 @@
+Now you can get your MLB updates for your favorite teams right in your Flash Briefing!  This skill has one feed for every MLB team so be sure to enable only the feeds for the teams you are interested in.
+
+This Skill currently tells you the following during your Flash Briefing:
+* Opponent and time for today's game if there is one
+* Result and score for yesterday's game if there was one
+
+Data for the feeds is updated once per day at 4am Eastern Time.
+
+You can contact me directly at josh@userdel.com, or https://github.com/irlrobot/mlb_game_info, for feedback and bug reports.
