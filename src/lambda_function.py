@@ -19,16 +19,23 @@ def lambda_handler(dummy_event, dummy_context):
     main function for aws lambda
     '''
     print('=========lambda_handler started...')
-    day = time.strftime("%-d")
-    month = time.strftime("%-m")
-    year = time.strftime("%Y")
-    games = mlbgame.day(int(year), int(month), int(day), home="Rays", away="Rays")
+    # get today's games
+    games_today = mlbgame.day(
+        int(time.strftime("%Y")), int(time.strftime("%-m")),
+        int(time.strftime("%-d")), home="Rays", away="Rays"
+    )
+    # get yesterday's games
+    yesterday = datetime.date.fromordinal(datetime.date.today().toordinal()-1)
+    games_yesterday = mlbgame.day(
+        int(yesterday.strftime("%Y")), int(yesterday.strftime("%-m")),
+        int(yesterday.strftime("%-d")), home="Rays", away="Rays"
+    )
     title_text = "Tampa Bay Rays Game Info"
 
-    if len(games) > 0:
-        main_text = "The Tampa Bay Rays play the Boston Red Sox today at 1:05pm Eastern."
+    if len(games_today) > 0:
+        main_text = get_upcoming_game_information(games_today)
     else:
-        main_text = "There are no games scheduled today."
+        main_text = "There are no games scheduled today for the Rays."
 
     write_to_s3(generate_json(title_text, main_text), "tampa_bay_rays")
 
@@ -72,3 +79,11 @@ def write_to_s3(json_content, team_name):
 
     print('=========s3 write successful')
     return True
+
+def get_upcoming_game_information(games_today):
+    '''
+    parse info for today's games
+    '''
+    return "Today, the " + games_today[0].away_team + " will play the " + \
+        games_today[0].home_team + " at " + games_today[0].game_start_time + \
+        "Eastern time."
