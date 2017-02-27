@@ -34,10 +34,16 @@ def lambda_handler(dummy_event, dummy_context):
     title_text = "Tampa Bay Rays Game Info"
 
     if len(games_today) > 0:
-        main_text = get_upcoming_game_information(games_today)
+        today_text = get_upcoming_game_information(games_today)
     else:
-        main_text = "There are no games scheduled today for the Rays."
+        today_text = "There are no games scheduled today for the Rays."
 
+    if len(games_yesterday) > 0:
+        yesterday_text = get_yesterdays_game_information(games_yesterday, "Rays")
+    else:
+        yesterday_text = "The Rays did not play yesterday."
+
+    main_text = yesterday_text + " " + today_text
     write_to_s3(generate_json(title_text, main_text), "rays")
 
 def generate_json(title_text, main_text):
@@ -89,3 +95,15 @@ def get_upcoming_game_information(games_today):
     return "Today, the " + games_today[0].away_team + " will play the " + \
         games_today[0].home_team + " at " + games_today[0].game_start_time + \
         " Eastern time."
+
+def get_yesterdays_game_information(games_yesterday, team):
+    '''
+    parse info for yesterday's games
+    '''
+    if games_yesterday[0].w_team == team:
+        status = "won"
+    else:
+        status = "lost"
+
+    return "Yesterday, the " + team + " " + status + ". The score was " + \
+        games_yesterday[0].nice_score() + ". "
