@@ -111,7 +111,7 @@ def get_todays_game_information(games_today, team):
             status = "tied"
         return "Today, the " + team + " " + status + ". The score was " + \
             games_today[0].nice_score() + ". "
-    elif games_today[0].games_status == 'IN_PROGRESS':
+    elif games_today[0].game_status == 'IN_PROGRESS':
         return "Right now, the " + team + " are playing" + ". The score is " + \
             games_today[0].nice_score() + ". "
     else:
