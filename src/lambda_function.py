@@ -101,7 +101,7 @@ def get_todays_game_information(games_today, team):
     '''
     parse info for today's games
     '''
-    if games_today[0].status == 'FINAL':
+    if games_today[0].game_status == 'FINAL':
         status = get_win_status(team, games_today[0].w_team)
         return "Today, the " + team + " " + status + ". The score was " + \
             games_today[0].nice_score() + ". "
