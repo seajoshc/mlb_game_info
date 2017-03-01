@@ -31,6 +31,12 @@ def get_team_info(team_short_name, team_full_name):
     get all info for a team
     '''
     print('=========Working on:  ' + team_full_name)
+    # TODO this is a hack around the Athletics as
+    # there is some weirdness around the returned club_common_name
+    # and not being able to actually use it
+    if team_short_name == "A's":
+        team_short_name = "Athletics"
+
     # get today's games
     games_today = mlbgame.day(
         int(time.strftime("%Y")), int(time.strftime("%-m")),
