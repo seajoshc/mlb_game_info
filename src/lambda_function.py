@@ -20,6 +20,8 @@ def lambda_handler(dummy_event, dummy_context):
     main function for aws lambda
     '''
     print('=========lambda_handler started...')
+    time.tzset()
+    print('=========container timezone is:  ' + str(time.tzname))
     for team in mlbgame.teams():
         get_team_info(team.club_common_name, team.club_full_name)
 
@@ -102,7 +104,10 @@ def get_todays_game_information(games_today, team):
     parse info for today's games
     '''
     if games_today[0].game_status == 'FINAL':
-        status = get_win_status(team, games_today[0].w_team)
+        try:
+            status = get_win_status(team, games_today[0].w_team)
+        except AttributeError as dummy_err:
+            status = "tied"
         return "Today, the " + team + " " + status + ". The score was " + \
             games_today[0].nice_score() + ". "
     else:
@@ -114,7 +119,10 @@ def get_yesterdays_game_information(games_yesterday, team):
     '''
     parse info for yesterday's games
     '''
-    status = get_win_status(team, games_yesterday[0].w_team)
+    try:
+        status = get_win_status(team, games_yesterday[0].w_team)
+    except AttributeError as dummy_err:
+        status = "tied"
 
     return "Yesterday, the " + team + " " + status + ". The score was " + \
         games_yesterday[0].nice_score() + ". "
@@ -123,10 +131,7 @@ def get_win_status(team, winning_team):
     '''
     determine if the team won, lost, or tied
     '''
-    try:
-        if winning_team == team:
-            return "won"
-        else:
-            return "lost"
-    except AttributeError as dummy_err:
-        return "tied"
+    if winning_team == team:
+        return "won"
+    else:
+        return "lost"
