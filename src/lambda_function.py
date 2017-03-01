@@ -25,6 +25,7 @@ def lambda_handler(dummy_event, dummy_context):
     for team in mlbgame.teams():
         get_team_info(team.club_common_name, team.club_full_name)
 
+    print('=========lambda_handler finished.')
 def get_team_info(team_short_name, team_full_name):
     '''
     get all info for a team
