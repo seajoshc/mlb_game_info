@@ -42,7 +42,7 @@ def get_team_info(team_short_name, team_full_name):
     title_text = team_full_name + " Game Info"
 
     if len(games_today) > 0:
-        today_text = get_upcoming_game_information(games_today)
+        today_text = get_todays_game_information(games_today, team_short_name)
     else:
         today_text = "There are no games scheduled today for the " + \
             team_short_name + "."
@@ -97,25 +97,36 @@ def write_to_s3(json_content, team_name):
     print('=========s3 write successful')
     return True
 
-def get_upcoming_game_information(games_today):
+def get_todays_game_information(games_today, team):
     '''
     parse info for today's games
     '''
-    return "Today, the " + games_today[0].away_team + " will play the " + \
-        games_today[0].home_team + " at " + games_today[0].game_start_time + \
-        " Eastern time."
+    if games_today[0].status == 'FINAL':
+        status = get_win_status(team, games_today[0].w_team)
+        return "Today, the " + team + " " + status + ". The score was " + \
+            games_today[0].nice_score() + ". "
+    else:
+        return "Today, the " + games_today[0].away_team + " will play the " + \
+            games_today[0].home_team + " at " + games_today[0].game_start_time + \
+            " Eastern time."
 
 def get_yesterdays_game_information(games_yesterday, team):
     '''
     parse info for yesterday's games
     '''
-    try:
-        if games_yesterday[0].w_team == team:
-            status = "won"
-        else:
-            status = "lost"
-    except AttributeError as dummy_err:
-        status = "tied"
+    status = get_win_status(team, games_yesterday[0].w_team)
 
     return "Yesterday, the " + team + " " + status + ". The score was " + \
         games_yesterday[0].nice_score() + ". "
+
+def get_win_status(team, winning_team):
+    '''
+    determine if the team won, lost, or tied
+    '''
+    try:
+        if winning_team == team:
+            return "won"
+        else:
+            return "lost"
+    except AttributeError as dummy_err:
+        return "tied"
