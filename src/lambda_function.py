@@ -1,4 +1,4 @@
-#!/usr/bin/env
+#!/usr/bin/env python
 """
 AWS Lambda function that grabs MLB Gameday data and formats
 it for consumption by Alexa Skills Kit Flash Briefing
@@ -15,6 +15,8 @@ import boto3
 from botocore.exceptions import ClientError
 import mlbgame
 
+SPECIAL_MSG = "Hooray, it's opening week!  Good luck to your team this year.  "
+
 def lambda_handler(dummy_event, dummy_context):
     '''
     main function for aws lambda
@@ -26,6 +28,7 @@ def lambda_handler(dummy_event, dummy_context):
         get_team_info(team.club_common_name, team.club_full_name)
 
     print('=========lambda_handler finished.')
+
 def get_team_info(team_short_name, team_full_name):
     '''
     get all info for a team
@@ -61,7 +64,7 @@ def get_team_info(team_short_name, team_full_name):
     else:
         yesterday_text = "The " + team_short_name + " did not play yesterday."
 
-    main_text = yesterday_text + " " + today_text
+    main_text = SPECIAL_MSG + yesterday_text + " " + today_text
     write_to_s3(generate_json(title_text, main_text), team_short_name)
 
 def generate_json(title_text, main_text):
