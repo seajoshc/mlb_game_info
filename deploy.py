@@ -1,4 +1,4 @@
-#!/usr/bin/env
+#!/usr/bin/env python
 """
 Deploy the Lambda function
 v1.0.0
