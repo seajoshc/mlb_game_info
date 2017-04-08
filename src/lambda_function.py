@@ -15,7 +15,7 @@ import boto3
 from botocore.exceptions import ClientError
 import mlbgame
 
-SPECIAL_MSG = "Hooray, it's opening week!  Good luck to your team this year.  "
+SPECIAL_MSG = ""
 
 def lambda_handler(dummy_event, dummy_context):
     '''
