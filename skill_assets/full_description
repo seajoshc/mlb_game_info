@@ -1,13 +1,17 @@
-Now you can get MLB game information for your favorite teams right in your Flash Briefing!  This Skill has one feed for every MLB team so be sure to enable the feeds for the teams you are interested in.
-
-Please note, Flash Briefing Skills must have a "Default" feed.  The Tampa Bay Rays feed will be enabled by default (the author's favorite team), so please remember to disable it in your Flash Briefing settings if you do not want Rays information.
+Now you can get MLB game information for your favorite teams right in your Flash Briefing!  This Skill has one feed for every MLB team so be sure to enable the feeds for the teams you are interested in.  Data for all feeds is currently refreshed every few minutes.
 
 This Skill currently tells you the following during your Flash Briefing:
 * Result and score for today's game if already played or in progress
 * Time for today's game if not yet played (time reported always in US Eastern timezone)
 * Result and score for yesterday's game if there was one
 
-Data for all feeds is currently refreshed hourly.
+Please note, Flash Briefing Skills must have a "Default" feed.  The Tampa Bay Rays feed will be enabled by default (the author's favorite team), so please remember to disable it in your Flash Briefing settings if you do not want Rays information.  Here's how you can enable a different feed:
+  1. Open the Alexa App or go to https://alexa.amazon.com
+  2. In the Menu, go to Settings
+  3. In Settings, go to Flash Briefing under the Accounts section
+  4. This will show you all the Flash Briefing "Feeds" you have turned On and Off.  You should see "Tampa Bay Rays Games" listed under the On section, as that is the default (Go Rays!).  Now under the Off section you should see "Unofficial MLB Game Info" with a little down arrow.  Tap that (it may take a few seconds to list them all, this appears to be a bug in Alexa App).
+  5. You should now see all the other 29 MLB teams listed.  Find your team and click/tap on it and this will enable the "Feed".
+  6. Now that team should show under the On section and you can turn off the Rays Feed (or keep it on and embrace them as your favorite AL team!).
 
 You can contact me directly at josh@userdel.com, or https://github.com/irlrobot/mlb_game_info, for feedback and bug reports.  Enjoy!
 
