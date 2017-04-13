@@ -53,21 +53,32 @@ def get_team_info(team_short_name, team_full_name):
     )
     title_text = team_full_name + " Game Info"
 
+    game_url = ""
     if len(games_today) > 0:
         today_text = get_todays_game_information(games_today, team_short_name)
+        try:
+            game_url = "http://mlb.com" + mlbgame.overview(games_today[0].game_id).preview
+        except AttributeError:
+            pass
     else:
         today_text = "There are no games scheduled today for the " + \
             team_short_name + "."
 
     if len(games_yesterday) > 0:
         yesterday_text = get_yesterdays_game_information(games_yesterday, team_short_name)
+        try:
+            if game_url == "":
+                game_url = "http://mlb.com" + mlbgame.overview(
+                    games_yesterday[0].game_id).wrapup_link
+        except AttributeError:
+            pass
     else:
         yesterday_text = "The " + team_short_name + " did not play yesterday."
 
     main_text = SPECIAL_MSG + yesterday_text + " " + today_text
-    write_to_s3(generate_json(title_text, main_text), team_short_name)
+    write_to_s3(generate_json(title_text, main_text, game_url), team_short_name)
 
-def generate_json(title_text, main_text):
+def generate_json(title_text, main_text, game_url):
     '''
     generate the flash briefing json
     '''
@@ -78,7 +89,8 @@ def generate_json(title_text, main_text):
         "uid": uid.urn,
         "updateDate": timestamp,
         "titleText": title_text,
-        "mainText": main_text
+        "mainText": main_text,
+        "redirectionUrl": game_url
     }
     return json.dumps(data, indent=2)
 
