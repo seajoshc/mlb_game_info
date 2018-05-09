@@ -2,7 +2,7 @@
 """
 AWS Lambda function that grabs MLB Gameday data and formats
 it for consumption by Alexa Skills Kit Flash Briefing
-v1.0.0
+v1.1.0
 github.com/irlrobot
 """
 from __future__ import print_function
@@ -15,12 +15,10 @@ import boto3
 from botocore.exceptions import ClientError
 import mlbgame
 
-SPECIAL_MSG = ""
+SPECIAL_MSG = "Spring training scores from the MLB are not updating properly. "
 
 def lambda_handler(dummy_event, dummy_context):
-    '''
-    main function for aws lambda
-    '''
+    '''main function for aws lambda'''
     print('=========lambda_handler started...')
     time.tzset()
     print('=========container timezone is:  ' + str(time.tzname))
@@ -30,9 +28,7 @@ def lambda_handler(dummy_event, dummy_context):
     print('=========lambda_handler finished.')
 
 def get_team_info(team_short_name, team_full_name):
-    '''
-    get all info for a team
-    '''
+    '''get all info for a team'''
     print('=========Working on:  ' + team_full_name)
     # TODO this is a hack around the Athletics as
     # there is some weirdness around the returned club_common_name
@@ -79,9 +75,7 @@ def get_team_info(team_short_name, team_full_name):
     write_to_s3(generate_json(title_text, main_text, game_url), team_short_name)
 
 def generate_json(title_text, main_text, game_url):
-    '''
-    generate the flash briefing json
-    '''
+    '''generate the flash briefing json'''
     uid = uuid.uuid1()
     utc_datetime = datetime.datetime.utcnow()
     timestamp = utc_datetime.strftime("%Y-%m-%dT%H:%M:%S.0Z")
@@ -95,9 +89,7 @@ def generate_json(title_text, main_text, game_url):
     return json.dumps(data, indent=2)
 
 def write_to_s3(json_content, team_name):
-    '''
-    write to s3 bucket
-    '''
+    '''write to s3 bucket'''
     print('=========json_content:  ' + json_content)
     print('=========team_name:  ' + team_name)
     bucket_key = os.environ['S3_BUCKET_KEY'] + '/' + team_name + '.json'
@@ -122,9 +114,7 @@ def write_to_s3(json_content, team_name):
     return True
 
 def get_todays_game_information(games_today, team):
-    '''
-    parse info for today's games
-    '''
+    '''parse info for today's games'''
     if games_today[0].game_status == 'FINAL':
         try:
             status = get_win_status(team, games_today[0].w_team)
@@ -141,9 +131,7 @@ def get_todays_game_information(games_today, team):
             " Eastern time."
 
 def get_yesterdays_game_information(games_yesterday, team):
-    '''
-    parse info for yesterday's games
-    '''
+    '''parse info for yesterday's games'''
     try:
         status = get_win_status(team, games_yesterday[0].w_team)
     except AttributeError as dummy_err:
@@ -153,9 +141,7 @@ def get_yesterdays_game_information(games_yesterday, team):
         games_yesterday[0].nice_score() + ". "
 
 def get_win_status(team, winning_team):
-    '''
-    determine if the team won, lost, or tied
-    '''
+    '''determine if the team won, lost, or tied'''
     if winning_team == team:
         return "won"
     else:

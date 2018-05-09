@@ -51,7 +51,6 @@ form of custom URL resolvers.
 """
 
 from lxml import etree
-import copy
 try:
     from urlparse import urljoin
     from urllib2 import urlopen
@@ -60,16 +59,11 @@ except ImportError:
     from urllib.parse import urljoin
     from urllib.request import urlopen
 
-try:
-    set
-except NameError:
-    # Python 2.3
-    from sets import Set as set
-
 XINCLUDE = "{http://www.w3.org/2001/XInclude}"
 
 XINCLUDE_INCLUDE = XINCLUDE + "include"
 XINCLUDE_FALLBACK = XINCLUDE + "fallback"
+XINCLUDE_ITER_TAG = XINCLUDE + "*"
 
 ##
 # Fatal include error.
@@ -137,6 +131,8 @@ def _wrap_et_loader(loader):
 # @param loader Optional resource loader.  If omitted, it defaults
 #     to {@link default_loader}.  If given, it should be a callable
 #     that implements the same interface as <b>default_loader</b>.
+# @param base_url The base URL of the original file, to resolve
+#     relative include file references.
 # @throws FatalIncludeError If the function fails to include a given
 #     resource, or if the tree contains malformed XInclude elements.
 # @throws IOError If the function fails to load a given resource.
@@ -167,7 +163,7 @@ def _include(elem, loader=None, _parent_hrefs=None, base_url=None):
     parser = elem.getroottree().parser
 
     include_elements = list(
-        elem.iter('{http://www.w3.org/2001/XInclude}*'))
+        elem.iter(XINCLUDE_ITER_TAG))
 
     for e in include_elements:
         if e.tag == XINCLUDE_INCLUDE:
